@@ -25,7 +25,7 @@ public class BoardService {
 
     // 게시글 수정
     @Transactional
-    public void update(Integer boardId, Integer sessionUserId, BoardRequest.UpdateDTO reqDTO){
+    public Board update(Integer boardId, Integer sessionUserId, BoardRequest.UpdateDTO reqDTO){
         Board board = boardJPARepository.findById(boardId)
                 .orElseThrow(() -> new Exception404("게시글을 찾을 수 없습니다"));
 
@@ -36,12 +36,14 @@ public class BoardService {
 
         board.setTitle(reqDTO.getTitle());
         board.setContent(reqDTO.getContent());
+        return board;
     }
 
     // 게시글 쓰기
     @Transactional
-    public void save(BoardRequest.SaveDTO reqDTO, User sessionUser){
-        boardJPARepository.save(reqDTO.toEntity(sessionUser));
+    public Board save(BoardRequest.SaveDTO reqDTO, User sessionUser){
+        Board board = boardJPARepository.save(reqDTO.toEntity(sessionUser));
+        return board;
     }
 
     // 게시글 삭제

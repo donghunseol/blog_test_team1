@@ -26,7 +26,7 @@ public class ReplyService {
     }
 
     @Transactional
-    public void delete(int replyId, int sessionUserId) {
+    public Reply delete(int replyId, int sessionUserId) {
         Reply reply = replyJPARepository.findById(replyId)
                 .orElseThrow(() -> new Exception404("없는 댓글을 삭제할 수 없어요"));
 
@@ -35,5 +35,6 @@ public class ReplyService {
         }
 
         replyJPARepository.deleteById(replyId);
+        return reply;
     }
 }

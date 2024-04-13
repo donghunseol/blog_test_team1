@@ -15,13 +15,13 @@ public class UserService {
 
     // 회원 가입
     @Transactional
-    public void join(UserRequest.JoinDTO reqDTO){
+    public User join(UserRequest.JoinDTO reqDTO){
         // id 중복 체크
         User user = userJPARepository.findByUsername(reqDTO.getUsername())
                 .orElseThrow(() -> new Exception400("중복된 아이디 입니다"));
 
         // 중복 안되면 저장 (가입)
-        userJPARepository.save(reqDTO.toEntity());
+        return userJPARepository.save(reqDTO.toEntity());
     }
 
     // 로그인
