@@ -3,15 +3,14 @@ package shop.mtcoding.blog.user;
 import jakarta.persistence.NoResultException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.validation.Errors;
+import org.springframework.web.bind.annotation.*;
 import shop.mtcoding.blog._core.errors.exception.Exception400;
 import shop.mtcoding.blog._core.errors.exception.Exception401;
 import shop.mtcoding.blog._core.util.ApiUtil;
@@ -26,14 +25,14 @@ public class UserController {
 
     // 회원 가입
     @PostMapping("/join")
-    public ResponseEntity<?> join(UserRequest.JoinDTO reqDTO) {
+    public ResponseEntity<?> join(@Valid @RequestBody UserRequest.JoinDTO reqDTO, Errors errors) {
         userService.join(reqDTO);
         return ResponseEntity.ok(new ApiUtil<>(reqDTO));
     }
 
     // 로그인
     @PostMapping("/login")
-    public ResponseEntity<?> login(UserRequest.LoginDTO reqDTO) {
+    public ResponseEntity<?> login(@Valid @RequestBody UserRequest.LoginDTO reqDTO, Errors errors) {
         User sessionUser = userService.login(reqDTO);
         session.setAttribute("sessionUser", sessionUser);
         return ResponseEntity.ok(new ApiUtil<>(null));
@@ -41,7 +40,7 @@ public class UserController {
 
     // 회원 정보 수정
     @PutMapping("/api/users/{userId}")
-    public ResponseEntity<?> update(@PathVariable Integer userId, UserRequest.UpdateDTO reqDTO) {
+    public ResponseEntity<?> update(@PathVariable Integer userId, @Valid @RequestBody UserRequest.UpdateDTO reqDTO, Errors errors) {
         User sessionUser = (User) session.getAttribute("sessionUser");
         User newSessionUser = userService.update(sessionUser.getId(), reqDTO);
         session.setAttribute("sessionUser", newSessionUser);

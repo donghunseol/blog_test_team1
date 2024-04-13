@@ -2,13 +2,16 @@ package shop.mtcoding.blog.board;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import shop.mtcoding.blog._core.errors.exception.Exception403;
 import shop.mtcoding.blog._core.errors.exception.Exception404;
 import shop.mtcoding.blog._core.util.ApiUtil;
@@ -47,7 +50,7 @@ public class BoardController {
 
     // 게시글 작성
     @PostMapping("/api/boards")
-    public ResponseEntity<?> save(BoardRequest.SaveDTO reqDTO) {
+    public ResponseEntity<?> save(@Valid @RequestBody BoardRequest.SaveDTO reqDTO, Errors errors) {
         User sessionUser = (User) session.getAttribute("sessionUser");
         Board board = boardService.save(reqDTO, sessionUser);
         return ResponseEntity.ok(new ApiUtil<>(board));
@@ -55,7 +58,7 @@ public class BoardController {
 
     // 게시글 수정
     @PostMapping("/api/boards/{id}")
-    public ResponseEntity<?> update(@PathVariable Integer id, BoardRequest.UpdateDTO reqDTO) {
+    public ResponseEntity<?> update(@PathVariable Integer id, @Valid @RequestBody BoardRequest.UpdateDTO reqDTO, Errors errors) {
         User sessionUser = (User) session.getAttribute("sessionUser");
         Board board = boardService.update(id, sessionUser.getId(), reqDTO);
         return ResponseEntity.ok(new ApiUtil<>(board));
