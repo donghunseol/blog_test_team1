@@ -8,10 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.Errors;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 import shop.mtcoding.blog._core.errors.exception.Exception403;
 import shop.mtcoding.blog._core.errors.exception.Exception404;
 import shop.mtcoding.blog._core.util.ApiUtil;
@@ -57,7 +54,7 @@ public class BoardController {
     }
 
     // 게시글 수정
-    @PostMapping("/api/boards/{id}")
+    @PutMapping("/api/boards/{id}")
     public ResponseEntity<?> update(@PathVariable Integer id, @Valid @RequestBody BoardRequest.UpdateDTO reqDTO, Errors errors) {
         User sessionUser = (User) session.getAttribute("sessionUser");
         Board board = boardService.update(id, sessionUser.getId(), reqDTO);
@@ -65,7 +62,7 @@ public class BoardController {
     }
 
     // 게시글 삭제
-    @PostMapping("/api/boards/{id}")
+    @DeleteMapping("/api/boards/{id}")
     public ResponseEntity<?> delete(@PathVariable Integer id) {
         User sessionUser = (User) session.getAttribute("sessionUser");
         boardService.delete(id, sessionUser.getId());

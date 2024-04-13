@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.Errors;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,7 +28,7 @@ public class ReplyController {
     }
 
     // 댓글 삭제
-    @PostMapping("/api/replies/{replyId}")
+    @DeleteMapping("/api/replies/{replyId}")
     public ResponseEntity<?> delete(@PathVariable Integer replyId){
         User sessionUser = (User) session.getAttribute("sessionUser");
         Reply reply = replyService.delete(replyId, sessionUser.getId());

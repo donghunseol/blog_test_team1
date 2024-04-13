@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import shop.mtcoding.blog._core.errors.exception.Exception400;
 import shop.mtcoding.blog._core.errors.exception.Exception401;
 import shop.mtcoding.blog._core.errors.exception.Exception404;
+import shop.mtcoding.blog._core.util.JwtUtil;
 
 @RequiredArgsConstructor
 @Service
@@ -25,10 +26,11 @@ public class UserService {
     }
 
     // 로그인
-    public User login(UserRequest.LoginDTO reqDTO){
+    public String login(UserRequest.LoginDTO reqDTO){
         User sessionUser = userJPARepository.findByUsernameAndPassword(reqDTO.getUsername(), reqDTO.getPassword())
                 .orElseThrow(() -> new Exception401("인증 되지 않은 계정입니다"));
-        return sessionUser;
+        String jwt = JwtUtil.create(sessionUser);
+        return jwt;
     }
 
     // 회원 정보 수정
