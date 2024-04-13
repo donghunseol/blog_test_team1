@@ -14,7 +14,7 @@ public class ReplyController {
     private final HttpSession session;
 
     // 댓글 쓰기
-    @PostMapping("/reply/save")
+    @PostMapping("/api/replies")
     public String save(ReplyRequest.SaveDTO reqDTO){
         User sessionUser = (User) session.getAttribute("sessionUser");
         replyService.save(reqDTO, sessionUser);
@@ -22,10 +22,10 @@ public class ReplyController {
     }
 
     // 댓글 삭제
-    @PostMapping("/board/{boardId}/reply/{replyId}/delete")
-    public String delete(@PathVariable Integer boardId, @PathVariable Integer replyId){
+    @PostMapping("/api/replies/{replyId}")
+    public String delete(@PathVariable Integer replyId){
         User sessionUser = (User) session.getAttribute("sessionUser");
         replyService.delete(replyId, sessionUser.getId());
-        return "redirect:/board/"+boardId;
+        return "redirect:/board";
     }
 }
