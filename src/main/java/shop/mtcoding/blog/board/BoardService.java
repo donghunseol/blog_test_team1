@@ -60,13 +60,14 @@ public class BoardService {
     }
 
     // 게시글 목록 조회
-    public List<Board> boardList() {
+    public List<BoardResponse.MainDTO> boardList() {
         Sort sort = Sort.by(Sort.Direction.DESC, "id"); // 정렬 조회
-        return boardJPARepository.findAll(sort);
+        List<Board> boardList = boardJPARepository.findAll(sort);
+        return boardList.stream().map(BoardResponse.MainDTO::new).toList();
     }
 
     // 게시글 상세 보기
-    public Board detail(Integer boardId, User sessionUser) {
+    public BoardResponse.DetailDTO detail(Integer boardId, User sessionUser) {
         Board board = boardJPARepository.findByJoinUser(boardId)
                 .orElseThrow(() -> new Exception404("게시글을 찾을 수 없습니다"));
 
@@ -91,6 +92,6 @@ public class BoardService {
             reply.setReplyOwner(isReplyOwner);
         });
 
-        return board;
+        return new BoardResponse.DetailDTO(board, sessionUser);
     }
 }

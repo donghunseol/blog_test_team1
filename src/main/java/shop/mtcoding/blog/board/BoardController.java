@@ -26,16 +26,16 @@ public class BoardController {
     // 글 목록 전체 조회
     @GetMapping("/")
     public ResponseEntity<?> index(){
-        List<Board> boardList = boardService.boardList();
-        return ResponseEntity.ok(new ApiUtil<>(boardList));
+        List<BoardResponse.MainDTO> respDTO = boardService.boardList();
+        return ResponseEntity.ok(new ApiUtil<>(respDTO));
     }
 
     // 글 상세 보기
     @GetMapping("/api/boards/{boardId}/detail")
     public ResponseEntity<?> detail(@PathVariable Integer boardId){
         User sessionUser = (User) session.getAttribute("sessionUser");
-        Board board = boardService.detail(boardId, sessionUser);
-        return ResponseEntity.ok(new ApiUtil<>(board));
+        BoardResponse.DetailDTO respDTO = boardService.detail(boardId, sessionUser);
+        return ResponseEntity.ok(new ApiUtil<>(respDTO));
     }
 
     // 글 조회
