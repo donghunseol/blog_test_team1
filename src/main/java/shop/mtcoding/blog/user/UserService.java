@@ -43,9 +43,9 @@ public class UserService {
     }
 
     // 회원 정보 조회
-    public User findByUser(Integer id){
+    public UserResponse.DTO findByUser(Integer id){
         User user = userJPARepository.findById(id)
                 .orElseThrow(() -> new Exception404("회원 정보를 찾을 수 없습니다"));
-        return user;
+        return new UserResponse.DTO(user);
     }
 }

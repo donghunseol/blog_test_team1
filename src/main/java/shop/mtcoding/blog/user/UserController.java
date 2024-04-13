@@ -50,8 +50,8 @@ public class UserController {
 
     @GetMapping("/api/users/{userId}")
     public ResponseEntity<?> userinfo(@PathVariable Integer userId) {
-        User user = userService.findByUser(userId);
-        return ResponseEntity.ok(new ApiUtil<>(user));
+        UserResponse.DTO respDTO = userService.findByUser(userId);
+        return ResponseEntity.ok(new ApiUtil<>(respDTO));
     }
 
     // 로그아웃
