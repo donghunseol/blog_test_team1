@@ -6,7 +6,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.mtcoding.blog._core.errors.exception.Exception403;
 import shop.mtcoding.blog._core.errors.exception.Exception404;
+import shop.mtcoding.blog.user.SessionUser;
 import shop.mtcoding.blog.user.User;
+import shop.mtcoding.blog.user.UserJPARepository;
 
 import java.util.List;
 
@@ -14,6 +16,7 @@ import java.util.List;
 @Service
 public class BoardService {
 
+    private final UserJPARepository userJPARepository;
     private final BoardJPARepository boardJPARepository;
 
     // 게시글 조회
@@ -41,8 +44,10 @@ public class BoardService {
 
     // 게시글 쓰기
     @Transactional
-    public Board save(BoardRequest.SaveDTO reqDTO, User sessionUser){
-        Board board = boardJPARepository.save(reqDTO.toEntity(sessionUser));
+    public Board save(BoardRequest.SaveDTO reqDTO, SessionUser sessionUser){
+        User user = userJPARepository.findById(sessionUser.getId())
+                .orElseThrow(() -> new Exception404("존재 하지 않는 계정입니다"));
+        Board board = boardJPARepository.save(reqDTO.toEntity(user));
         return board;
     }
 
@@ -67,14 +72,17 @@ public class BoardService {
     }
 
     // 게시글 상세 보기
-    public BoardResponse.DetailDTO detail(Integer boardId, User sessionUser) {
+    public BoardResponse.DetailDTO detail(Integer boardId, SessionUser sessionUser) {
+        User user = userJPARepository.findById(sessionUser.getId())
+                .orElseThrow(() -> new Exception404("존재 하지 않는 계정입니다"));
+
         Board board = boardJPARepository.findByJoinUser(boardId)
                 .orElseThrow(() -> new Exception404("게시글을 찾을 수 없습니다"));
 
         // 게시글 주인 여부 파악
         boolean isOwner = false;
-        if(sessionUser != null){
-            if(sessionUser.getId() == board.getUser().getId()){
+        if(user != null){
+            if(user.getId() == board.getUser().getId()){
                 isOwner = true;
             }
         }
@@ -84,14 +92,14 @@ public class BoardService {
         board.getReplies().forEach(reply -> {
             boolean isReplyOwner = false;
 
-            if(sessionUser != null){
-                if(reply.getUser().getId() == sessionUser.getId()){
+            if(user != null){
+                if(reply.getUser().getId() == user.getId()){
                     isReplyOwner = true;
                 }
             }
             reply.setReplyOwner(isReplyOwner);
         });
 
-        return new BoardResponse.DetailDTO(board, sessionUser);
+        return new BoardResponse.DetailDTO(board, user);
     }
 }

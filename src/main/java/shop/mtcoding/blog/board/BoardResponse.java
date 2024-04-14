@@ -5,10 +5,28 @@ import lombok.Data;
 import shop.mtcoding.blog.reply.Reply;
 import shop.mtcoding.blog.user.User;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
 public class BoardResponse {
+
+    @Data
+    public static class DTO{
+        private Integer id;
+        private String title;
+        private String content;
+        private Integer userId;
+        private Timestamp createdAt;
+
+        public DTO(Board board) {
+            this.id = board.getId();
+            this.title = board.getTitle();
+            this.content = board.getContent();
+            this.userId = board.getUser().getId();
+            this.createdAt = board.getCreatedAt();
+        }
+    }
 
     // 게시글 조회
     @Data

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import shop.mtcoding.blog._core.errors.exception.Exception400;
 import shop.mtcoding.blog._core.errors.exception.Exception401;
 import shop.mtcoding.blog._core.util.ApiUtil;
+import shop.mtcoding.blog._core.util.JwtUtil;
 
 
 @RequiredArgsConstructor
@@ -26,26 +27,30 @@ public class UserController {
     // 회원 가입
     @PostMapping("/join")
     public ResponseEntity<?> join(@Valid @RequestBody UserRequest.JoinDTO reqDTO, Errors errors) {
-        userService.join(reqDTO);
-        return ResponseEntity.ok(new ApiUtil<>(reqDTO));
+        User user = userService.join(reqDTO);
+        UserResponse.DTO respDTO = userService.findByUser(user.getId());
+        return ResponseEntity.ok(new ApiUtil<>(respDTO));
     }
 
     // 로그인
     @PostMapping("/login")
     public ResponseEntity<?> login(@Valid @RequestBody UserRequest.LoginDTO reqDTO, Errors errors) {
         String jwt = userService.login(reqDTO);
-        return ResponseEntity.ok().header("Authorization", "Bearer " + jwt).body(new ApiUtil<>(null));
+        UserResponse.LoginDTO respDTO = userService.findByLoginUser(JwtUtil.verify(jwt).getId());
+        return ResponseEntity.ok().header("Authorization", "Bearer " + jwt).body(new ApiUtil<>(respDTO));
     }
 
     // 회원 정보 수정
     @PutMapping("/api/users/{userId}")
     public ResponseEntity<?> update(@PathVariable Integer userId, @Valid @RequestBody UserRequest.UpdateDTO reqDTO, Errors errors) {
-        User sessionUser = (User) session.getAttribute("sessionUser");
-        User newSessionUser = userService.update(sessionUser.getId(), reqDTO);
+        SessionUser sessionUser = (SessionUser) session.getAttribute("sessionUser");
+        SessionUser newSessionUser = userService.update(sessionUser.getId(), reqDTO);
         session.setAttribute("sessionUser", newSessionUser);
-        return ResponseEntity.ok(new ApiUtil<>(newSessionUser));
+        UserResponse.DTO respDTO = userService.findByUser(newSessionUser.getId());
+        return ResponseEntity.ok(new ApiUtil<>(respDTO));
     }
 
+    // 회원 정보 출력
     @GetMapping("/api/users/{userId}")
     public ResponseEntity<?> userinfo(@PathVariable Integer userId) {
         UserResponse.DTO respDTO = userService.findByUser(userId);
