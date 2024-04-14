@@ -30,9 +30,6 @@ public class MyValidationHandler {
                     }
                 }
             }
-
         }
-
-        System.out.println("MyValidationHandler : TEST CODE LOADING");
     }
 }

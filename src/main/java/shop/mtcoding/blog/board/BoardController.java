@@ -18,8 +18,8 @@ import shop.mtcoding.blog.user.User;
 
 import java.util.List;
 
-@RequiredArgsConstructor // final이 붙은 친구들의 생성자를 만들어줘
-@Controller // new BoardController(IoC에서 BoardRepository를 찾아서 주입) -> IoC 컨테이너 등록
+@RequiredArgsConstructor
+@RestController
 public class BoardController {
 
     private final BoardService boardService;

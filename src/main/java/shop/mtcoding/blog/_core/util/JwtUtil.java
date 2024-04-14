@@ -12,7 +12,7 @@ public class JwtUtil {
     public static String create(User user){
         String jwt = JWT.create()
                 .withSubject("blog")
-                .withExpiresAt(new Date(System.currentTimeMillis() + 1000 * 60 * 60))
+                .withExpiresAt(new Date(System.currentTimeMillis() + 1000L * 60 * 60 * 24))
                 .withClaim("id", user.getId())
                 .withClaim("username", user.getUsername())
                 .sign(Algorithm.HMAC256("sdhcoding"));

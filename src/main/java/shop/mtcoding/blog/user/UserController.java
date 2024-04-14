@@ -18,7 +18,7 @@ import shop.mtcoding.blog._core.util.JwtUtil;
 
 
 @RequiredArgsConstructor
-@Controller
+@RestController
 public class UserController {
 
     private final UserService userService;
